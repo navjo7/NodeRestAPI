@@ -10,6 +10,7 @@
   "author": "Navjot Singh",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "config": "^1.30.0",
     "cors": "^2.8.4",
