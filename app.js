@@ -28,7 +28,6 @@ app.use((req,res,next)=>{
 //routes which handle requests
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
-const encodedPassword = encodeURIComponent(process.env.DB_PASS);
 // ,{ 
 //     useNewUrlParser: true,
     
@@ -38,14 +37,18 @@ const options = {
   poolSize: 10
 };
 
+const encodedPassword = encodeURIComponent(process.env.DB_PASS);
 const dbURI = 'mongodb://' + process.env.DB_USER + ':' + encodedPassword + process.env.DB_URI_1 + process.env.DB_Name + process.env.DB_URI_2
+
 mongoose.connect(dbURI).then(()=>{
     console.log(" DB connected successfully")
 }).catch((e)=>{
     console.log(e)
 })
-app.use(morgan('dev'))
 
+mongoose.Promise = global.Promise
+
+app.use(morgan('dev'))
 app.use('/products',productRoutes)
 app.use('/orders', orderRoutes)
 

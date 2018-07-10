@@ -5,19 +5,36 @@ const mongoose = require('mongoose')
 const Product = require('../models/product')
 
 router.get('/',(req,res,next)=>{
-    Product.find().then((doc)=>{
-        if (!doc) {
-            res.status(404).json({
-                message: "no data available"
+    Product.find()
+        .select('name price _id')
+        .then((docs)=>{
+          
+            const response = {
+                count: docs.lengeth,
+                products: docs.map(doc=>{
+                    return{
+                        name: doc.name,
+                        price: doc.price,
+                        _id: doc._id,
+                        request: {
+                            type: 'GET',
+                            url: 'localhost:3000/products/'+doc._id
+                        }
+                    }
+                })
+            }
+            if (!response) {
+                res.status(404).json({
+                    message: "no data available"
+                })
+            }
+            console.log(response)
+            res.status(200).json(response)
+        }).catch((e) => {
+            // console.log(e)
+            res.status(500).json({
+                error: e
             })
-        }
-        console.log(res)
-        res.status(200).json(doc)
-    }).catch((e) => {
-        // console.log(e)
-        res.status(500).json({
-            error: e
-        })
 
     })
 })
@@ -33,7 +50,15 @@ router.post('/',(req,res,next)=>{
         console.log(result)
          res.status(201).json({
              message: "Get POST for /products",
-             createdProduct: product
+             createdProduct: {
+                 name: result.name,
+                 price: result.price,
+                 _id: result._id,
+                 request:{
+                     type: 'POST',
+                     url:"localhost:3000/products"+result._id
+                 }
+             }
          })
     }).catch((e)=>{
         console.log(e)
