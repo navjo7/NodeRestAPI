@@ -29,6 +29,20 @@ router.post('/signup',(req,res,next)=>{
     })
 })
 
+router.get('/',(req,res,next)=>{
+    User.find().then((results)=>{
+        res.status(200).json(results)
+    }).catch((e)=>{
+        res.status(500).json({error:e})
+    })
+})
 
+router.delete('/:userId',(req,res,next)=>{
+    User.findByIdAndRemove(req.params.userId).then((results)=>{
+        res.status(200).json(results)
+    }).catch((e)=>{
+        res.status(500).json({error:e})
+    })
+})
 
 module.exports = router
